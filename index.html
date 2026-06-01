@@ -245,7 +245,7 @@ btnGenerate.addEventListener('click', async () => {
       .replace(/\{hours\}/g, String(hours))
       .replace(/\{expiresAt\}/g, expiresAt);
 
-    await navigator.clipboard.writeText(tpl);
+    await copyText(tpl);
     previewContent.textContent = tpl;
     previewEl.classList.add('show');
 
@@ -296,11 +296,30 @@ $('history').addEventListener('click', async (e) => {
     .replace(/\{code\}/g, rec.code)
     .replace(/\{hours\}/g, String(cfg.hours || 3))
     .replace(/\{expiresAt\}/g, rec.expiresAt);
-  await navigator.clipboard.writeText(tpl);
+  await copyText(tpl);
   showToast('已重新复制');
 });
 
 // ====== Helpers ======
+async function copyText(text) {
+  // Try modern API first
+  try {
+    await navigator.clipboard.writeText(text);
+    return;
+  } catch(e) {}
+  // Fallback for mobile browsers
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  ta.style.top = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
 function setStatus(msg, type) {
   statusEl.textContent = msg;
   statusEl.className = 'status ' + (type || '');
