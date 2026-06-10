@@ -6,91 +6,158 @@
 <title>CC-Installer 发货助手</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f5f6fa;--surface:#fff;--border:#e2e5ed;--text:#1a1d29;
-  --text2:#6b7085;--muted:#9ca3b0;--brand:#6366f1;--brand2:#4f46e5;
-  --ok:#22c55e;--err:#ef4444;--r:10px;--rs:6px
-}
-body{
-  font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
-  background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;
-  -webkit-font-smoothing:antialiased
-}
-#app{max-width:500px;margin:0 auto;padding:12px 14px 24px;display:flex;flex-direction:column;gap:10px}
+:root{--bg:#f5f6fa;--surface:#fff;--border:#e2e5ed;--text:#1a1d29;--text2:#6b7085;--muted:#9ca3b0;--brand:#6366f1;--brand2:#4f46e5;--ok:#22c55e;--err:#ef4444;--r:10px;--rs:6px}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+#app{max-width:520px;margin:0 auto;padding:12px 14px 30px;display:flex;flex-direction:column;gap:10px}
 .section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
-.section-title{font-size:14px;font-weight:700;margin-bottom:10px}
+.section-title{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
-input,textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;background:var(--bg);outline:none}
-input:focus,textarea:focus{border-color:var(--brand);background:white}
-textarea{font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;min-height:100px}
-.inline{display:flex;align-items:center;gap:8px}
-.inline label{margin-bottom:0;flex-shrink:0}
-.input-sm{width:70px}
-.suffix{font-size:12px;color:var(--muted)}
-.row{margin-bottom:10px}.row:last-child{margin-bottom:0}
-.btn{
-  width:100%;padding:15px;border:none;border-radius:var(--r);font-size:16px;font-weight:700;
-  cursor:pointer;background:linear-gradient(135deg,var(--brand),#818cf8);color:white;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:0 4px 16px rgba(99,102,241,.3)
-}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{opacity:.6}
+input,textarea,select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;background:var(--bg);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--brand);background:white}
+textarea{font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;min-height:80px}
+select{cursor:pointer}
+.btn{width:100%;padding:15px;border:none;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--brand),#818cf8);color:white;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(99,102,241,.3)}
+.btn:active{transform:translateY(1px)}.btn:disabled{opacity:.6}
+.btn-sm{padding:8px 14px;font-size:12px;width:auto;box-shadow:none;border-radius:var(--rs)}
+.btn-outline{background:transparent;border:1px solid var(--brand);color:var(--brand);box-shadow:none}
 .status{margin-top:10px;text-align:center;font-size:13px;font-weight:600;min-height:20px}
 .status.ok{color:var(--ok)}.status.err{color:var(--err)}
 .preview{margin-top:10px;display:none}.preview.show{display:block}
 .preview-label{font-size:11px;color:var(--muted);margin-bottom:4px}
 .preview-content{background:#1a1d29;color:#c4c8d4;padding:12px;border-radius:var(--rs);font-size:12px;white-space:pre-wrap;word-break:break-all;font-family:monospace;user-select:text}
-.key-section{display:none}.key-section.show{display:block}
-.key-status{font-size:11px;color:var(--muted);margin-top:4px}
-.key-status.ok{color:var(--ok)}.key-status.err{color:var(--err)}
 .hint{font-size:11px;color:var(--muted);margin-bottom:6px}
 .hint code{font-size:11px;background:var(--bg);padding:1px 4px;border-radius:3px}
+.row{margin-bottom:8px}.row:last-child{margin-bottom:0}
+.inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.inline label{margin-bottom:0;flex-shrink:0}
+.input-sm{width:70px}.suffix{font-size:12px;color:var(--muted)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.selector{display:flex;gap:8px}
+.selector button{flex:1;padding:10px;border:2px solid var(--border);border-radius:var(--rs);background:white;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;text-align:center}
+.selector button:hover{border-color:var(--brand)}
+.selector button.active{border-color:var(--brand);background:var(--brand);color:white}
+.version-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.version-grid button{padding:8px;border:2px solid var(--border);border-radius:var(--rs);background:white;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.version-grid button:hover{border-color:var(--brand)}
+.version-grid button.active{border-color:var(--brand);background:var(--brand);color:white}
+.cfg-link{display:grid;grid-template-columns:1fr 80px;gap:6px;margin-bottom:6px;align-items:start}
+.cfg-link .label{font-size:11px;color:var(--muted);grid-column:1/-1;margin-bottom:-2px}
+.tab-bar{display:flex;gap:4px;margin-bottom:8px}
+.tab-bar button{padding:6px 12px;border:1px solid var(--border);border-radius:var(--rs) var(--rs) 0 0;background:var(--bg);cursor:pointer;font-size:12px;font-weight:600;color:var(--text2)}
+.tab-bar button.active{background:var(--surface);border-bottom-color:var(--surface);color:var(--brand)}
+.cfg-panel{display:none}.cfg-panel.show{display:block}
 .history-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--rs);cursor:pointer;font-size:12px}
 .history-item:hover{background:var(--bg)}
 .h-time{color:var(--muted);font-size:11px;min-width:44px}
 .h-code{flex:1;font-family:monospace;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-ver{font-size:10px;color:var(--muted);min-width:50px;text-align:right}
 .h-status{color:var(--ok);font-size:11px}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:#1a1d29;color:white;padding:10px 20px;border-radius:8px;font-size:13px;z-index:1000;opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.close-btn{position:absolute;top:8px;right:12px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-  <div class="section">
-    <div class="section-title">🔑 私钥设置 <span class="key-status" id="keyStatus">未加载</span></div>
-    <div class="key-section show" id="keySetup">
-      <p style="font-size:12px;color:var(--text2);margin-bottom:8px">首次使用请粘贴私钥（之后会保存在本地浏览器中）</p>
-      <textarea id="keyInput" placeholder="粘贴 private.pem 内容..." rows="4"></textarea>
-      <button class="btn" id="btnSaveKey" style="margin-top:8px;padding:10px;font-size:14px">保存私钥</button>
+<!-- ===== 私钥 ===== -->
+<div class="section">
+  <div class="section-title">🔑 私钥设置 <span id="keyStatus" style="font-size:12px;font-weight:400;color:var(--muted)">未加载</span></div>
+  <div id="keySetup">
+    <p style="font-size:12px;color:var(--text2);margin-bottom:8px">首次使用请粘贴私钥（保存在本地浏览器）</p>
+    <textarea id="keyInput" placeholder="粘贴 private.pem 内容..." rows="4"></textarea>
+    <button class="btn btn-sm" id="btnSaveKey" style="margin-top:8px">保存私钥</button>
+  </div>
+  <div id="keyLoaded" style="display:none">
+    <span style="color:var(--ok);font-size:13px">✅ 私钥已加载</span>
+    <button id="btnClearKey" style="margin-left:8px;font-size:11px;color:var(--err);background:none;border:none;cursor:pointer">清除</button>
+  </div>
+</div>
+
+<!-- ===== API 配置 ===== -->
+<div class="section">
+  <div class="section-title">🌐 API 服务器</div>
+  <p class="hint">部署 Cloudflare Worker 后的 URL，用于注册和核销授权码</p>
+  <div class="row"><input type="text" id="apiUrl" placeholder="https://cc-installer-auth.xxx.workers.dev"></div>
+  <div class="row inline" style="margin-top:4px">
+    <span id="apiStatus" style="font-size:11px;color:var(--muted)">未检测</span>
+    <button class="btn btn-sm btn-outline" id="btnTestApi" style="padding:4px 10px;font-size:11px">测试连接</button>
+  </div>
+</div>
+
+<!-- ===== 版本链接配置 ===== -->
+<div class="section">
+  <div class="section-title">📦 版本链接配置</div>
+  <p class="hint">每个版本对应一个百度网盘链接，填一次自动保存</p>
+  <div class="tab-bar">
+    <button class="active" data-tab="win">Windows</button>
+    <button data-tab="mac">macOS</button>
+  </div>
+  <div class="cfg-panel show" data-panel="win">
+    <div class="cfg-link"><span class="label">Windows · Claude Code</span>
+      <input type="text" id="lnk-win-claude" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-win-claude" placeholder="提取码" style="font-size:12px" maxlength="6">
     </div>
-    <div id="keyLoaded" style="display:none">
-      <span style="color:var(--ok);font-size:13px">✅ 私钥已加载</span>
-      <button id="btnClearKey" style="margin-left:8px;font-size:11px;color:var(--err);background:none;border:none;cursor:pointer">清除</button>
+    <div class="cfg-link"><span class="label">Windows · Codex CLI</span>
+      <input type="text" id="lnk-win-codex" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-win-codex" placeholder="提取码" style="font-size:12px" maxlength="6">
+    </div>
+    <div class="cfg-link"><span class="label">Windows · Pro</span>
+      <input type="text" id="lnk-win-pro" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-win-pro" placeholder="提取码" style="font-size:12px" maxlength="6">
     </div>
   </div>
-
-  <div class="section">
-    <div class="section-title">🔗 发货配置</div>
-    <div class="row"><label>百度网盘链接</label><input type="text" id="link" placeholder="https://pan.baidu.com/s/..."></div>
-    <div class="row"><label>提取码</label><input type="text" id="extract" placeholder="请输入提取码" maxlength="6"></div>
-    <div class="row inline"><label>有效期</label><input type="number" id="hours" class="input-sm" value="3" min="1" max="720"><span class="suffix">小时</span></div>
+  <div class="cfg-panel" data-panel="mac">
+    <div class="cfg-link"><span class="label">macOS · Claude Code</span>
+      <input type="text" id="lnk-mac-claude" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-mac-claude" placeholder="提取码" style="font-size:12px" maxlength="6">
+    </div>
+    <div class="cfg-link"><span class="label">macOS · Codex CLI</span>
+      <input type="text" id="lnk-mac-codex" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-mac-codex" placeholder="提取码" style="font-size:12px" maxlength="6">
+    </div>
+    <div class="cfg-link"><span class="label">macOS · Pro</span>
+      <input type="text" id="lnk-mac-pro" placeholder="https://pan.baidu.com/s/..." style="font-size:12px">
+      <input type="text" id="ext-mac-pro" placeholder="提取码" style="font-size:12px" maxlength="6">
+    </div>
   </div>
+</div>
 
-  <button class="btn" id="btnGenerate"><span>🔑</span><span>生成授权码并复制</span></button>
+<!-- ===== 生成授权码 ===== -->
+<div class="section">
+  <div class="section-title">🔗 生成授权码</div>
+  <div class="row"><label>选择系统</label></div>
+  <div class="selector" id="osSelector">
+    <button data-os="win">Windows</button>
+    <button data-os="mac">macOS</button>
+  </div>
+  <div class="row" style="margin-top:8px"><label>选择版本</label></div>
+  <div class="version-grid" id="verSelector">
+    <button data-ver="claude">Claude Code</button>
+    <button data-ver="codex">Codex CLI</button>
+    <button data-ver="pro">Pro</button>
+  </div>
+  <div class="row inline" style="margin-top:10px">
+    <label style="margin-bottom:0">有效期</label>
+    <input type="number" id="hours" class="input-sm" value="3" min="1" max="720">
+    <span class="suffix">小时</span>
+  </div>
+  <button class="btn" id="btnGenerate" style="margin-top:10px">
+    <span>🔑</span><span>生成授权码并复制</span>
+  </button>
   <div class="status" id="status"></div>
   <div class="preview" id="preview">
     <div class="preview-label">📋 已复制到剪贴板：</div>
     <pre class="preview-content" id="previewContent"></pre>
   </div>
+</div>
 
-  <div class="section">
-    <div class="section-title">💬 消息模板</div>
-    <p class="hint">变量: <code>{link}</code> <code>{extract}</code> <code>{code}</code> <code>{hours}</code> <code>{expiresAt}</code></p>
-    <textarea id="template" rows="6">【CC-Installer 一键安装工具】
+<!-- ===== 消息模板 ===== -->
+<div class="section">
+  <div class="section-title">💬 消息模板</div>
+  <p class="hint">变量: <code>{link}</code> <code>{extract}</code> <code>{code}</code> <code>{hours}</code> <code>{expiresAt}</code> <code>{version}</code></p>
+  <textarea id="template" rows="6">【CC-Installer 一键安装工具】
+版本: {version}
 
 下载链接: {link}
 提取码: {extract}
@@ -99,237 +166,246 @@ textarea{font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;mi
 ⏰ 有效期 {hours} 小时（至 {expiresAt}），请尽快激活使用
 
 安装教程见网盘内的使用指南文档</textarea>
-  </div>
+</div>
 
-  <div class="section" style="flex:1">
-    <div class="section-title">📜 发货记录</div>
-    <div id="history"></div>
-  </div>
+<!-- ===== 发货记录 ===== -->
+<div class="section">
+  <div class="section-title">📜 发货记录 <span id="histCount" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
+  <div id="history"></div>
+</div>
+
 </div>
 
 <script>
-// ====== State ======
 const LS_KEY = 'cc-delivery-key';
-const LS_CFG = 'cc-delivery-cfg';
 const LS_HIST = 'cc-delivery-hist';
+
+const VERSIONS = {
+  'win-claude': { label: 'Windows · Claude Code', os: 'win', ver: 'claude' },
+  'win-codex':  { label: 'Windows · Codex CLI', os: 'win', ver: 'codex' },
+  'win-pro':    { label: 'Windows · Pro', os: 'win', ver: 'pro' },
+  'mac-claude': { label: 'macOS · Claude Code', os: 'mac', ver: 'claude' },
+  'mac-codex':  { label: 'macOS · Codex CLI', os: 'mac', ver: 'codex' },
+  'mac-pro':    { label: 'macOS · Pro', os: 'mac', ver: 'pro' },
+};
 
 let privateKeyPem = localStorage.getItem(LS_KEY) || '';
 let cryptoKey = null;
-let cfg = JSON.parse(localStorage.getItem(LS_CFG) || '{"link":"","extract":"","hours":3,"template":""}');
 let history = JSON.parse(localStorage.getItem(LS_HIST) || '[]');
-
-// ====== DOM ======
+let selectedOS = 'win';
+let selectedVer = 'claude';
 const $ = id => document.getElementById(id);
-const keySetup = $('keySetup'), keyLoaded = $('keyLoaded'), keyStatus = $('keyStatus');
-const btnSaveKey = $('btnSaveKey'), btnClearKey = $('btnClearKey');
-const btnGenerate = $('btnGenerate'), statusEl = $('status');
-const previewEl = $('preview'), previewContent = $('previewContent');
-const defaultTpl = $('template').value;
 
-// ====== Init ======
 function init() {
-  $('link').value = cfg.link || '';
-  $('extract').value = cfg.extract || '';
-  $('hours').value = cfg.hours || 3;
-  $('template').value = cfg.template || defaultTpl;
+  // API URL
+  $('apiUrl').value = localStorage.getItem('cc-api-url') || '';
+  $('apiUrl').addEventListener('input', () => localStorage.setItem('cc-api-url', $('apiUrl').value));
+  $('btnTestApi').addEventListener('click', testApi);
 
-  ['link','extract','hours','template'].forEach(id => {
-    $(id).addEventListener('input', saveCfg);
-  });
-
-  if (privateKeyPem) {
-    loadKey(privateKeyPem);
+  // 6版本链接
+  for (const key of Object.keys(VERSIONS)) {
+    const saved = JSON.parse(localStorage.getItem('link-' + key) || '{"link":"","ext":""}');
+    $('lnk-' + key).value = saved.link || '';
+    $('ext-' + key).value = saved.ext || '';
+    ['input','change'].forEach(ev => {
+      $('lnk-' + key).addEventListener(ev, saveLinks);
+      $('ext-' + key).addEventListener(ev, saveLinks);
+    });
   }
 
+  // 模板
+  const defTpl = $('template').value;
+  $('template').value = localStorage.getItem('cc-template') || defTpl;
+  $('template').addEventListener('input', () => localStorage.setItem('cc-template', $('template').value));
+
+  // Tab
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.cfg-panel').forEach(p => p.classList.remove('show'));
+      btn.classList.add('active');
+      document.querySelector('[data-panel="' + btn.dataset.tab + '"]').classList.add('show');
+    });
+  });
+
+  // OS 选择
+  document.querySelectorAll('#osSelector button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#osSelector button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedOS = btn.dataset.os;
+    });
+  });
+  document.querySelector('#osSelector button').classList.add('active');
+
+  // 版本选择
+  document.querySelectorAll('#verSelector button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#verSelector button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedVer = btn.dataset.ver;
+    });
+  });
+  document.querySelector('#verSelector button').classList.add('active');
+
+  // 私钥
+  if (privateKeyPem) loadKey(privateKeyPem);
+
+  $('btnGenerate').addEventListener('click', generate);
   renderHistory();
 }
 init();
 
-function saveCfg() {
-  cfg = {
-    link: $('link').value.trim(),
-    extract: $('extract').value.trim(),
-    hours: parseInt($('hours').value) || 3,
-    template: $('template').value || defaultTpl,
-  };
-  localStorage.setItem(LS_CFG, JSON.stringify(cfg));
+function saveLinks() {
+  for (const key of Object.keys(VERSIONS)) {
+    localStorage.setItem('link-' + key, JSON.stringify({
+      link: $('lnk-' + key).value.trim(),
+      ext: $('ext-' + key).value.trim(),
+    }));
+  }
 }
 
-// ====== Key Management ======
 async function loadKey(pem) {
   try {
-    const pemContents = pem.trim();
-    const b64 = pemContents
-      .replace('-----BEGIN PRIVATE KEY-----', '')
-      .replace('-----END PRIVATE KEY-----', '')
-      .replace(/\s/g, '');
-    const binary = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    cryptoKey = await crypto.subtle.importKey(
-      'pkcs8', binary,
-      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
-      false, ['sign']
-    );
-    keySetup.style.display = 'none';
-    keyLoaded.style.display = 'block';
-    keyStatus.textContent = '已加载';
-    keyStatus.className = 'key-status ok';
+    const b64 = pem.trim().replace('-----BEGIN PRIVATE KEY-----','').replace('-----END PRIVATE KEY-----','').replace(/\s/g,'');
+    const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    cryptoKey = await crypto.subtle.importKey('pkcs8', bin, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']);
+    $('keySetup').style.display = 'none';
+    $('keyLoaded').style.display = 'block';
+    $('keyStatus').textContent = '✅ 已加载';
     localStorage.setItem(LS_KEY, pem);
     privateKeyPem = pem;
-    return true;
   } catch(e) {
-    keyStatus.textContent = '密钥格式错误';
-    keyStatus.className = 'key-status err';
-    return false;
+    $('keyStatus').textContent = '❌ 密钥格式错误';
+  }
+}
+$('btnSaveKey').addEventListener('click', async () => {
+  const pem = $('keyInput').value.trim();
+  if (!pem) return;
+  $('btnSaveKey').disabled = true;
+  $('btnSaveKey').textContent = '加载中...';
+  await loadKey(pem);
+  $('btnSaveKey').disabled = false;
+  $('btnSaveKey').textContent = '保存私钥';
+});
+$('btnClearKey').addEventListener('click', () => {
+  localStorage.removeItem(LS_KEY);
+  privateKeyPem = ''; cryptoKey = null;
+  $('keySetup').style.display = 'block';
+  $('keyLoaded').style.display = 'none';
+  $('keyStatus').textContent = '未加载';
+});
+
+async function testApi() {
+  const url = $('apiUrl').value.trim();
+  if (!url) { showToast('请先填写 API 地址'); return; }
+  $('apiStatus').textContent = '⏳ 检测中...';
+  try {
+    const r = await fetch(url + '/api/auth/check', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: 'TEST' }),
+    });
+    $('apiStatus').textContent = r.ok ? '✅ 连接正常' : '❌ 返回 ' + r.status;
+    $('apiStatus').style.color = r.ok ? 'var(--ok)' : 'var(--err)';
+  } catch(e) {
+    $('apiStatus').textContent = '❌ ' + e.message;
+    $('apiStatus').style.color = 'var(--err)';
   }
 }
 
-btnSaveKey.addEventListener('click', async () => {
-  const pem = $('keyInput').value.trim();
-  if (!pem) return;
-  btnSaveKey.disabled = true;
-  btnSaveKey.textContent = '加载中...';
-  const ok = await loadKey(pem);
-  btnSaveKey.disabled = false;
-  btnSaveKey.textContent = '保存私钥';
-  if (ok) showToast('私钥已保存');
-});
-
-btnClearKey.addEventListener('click', () => {
-  localStorage.removeItem(LS_KEY);
-  privateKeyPem = '';
-  cryptoKey = null;
-  keySetup.style.display = 'block';
-  keyLoaded.style.display = 'none';
-  keyStatus.textContent = '未加载';
-  keyStatus.className = 'key-status';
-});
-
-// ====== Generate ======
-btnGenerate.addEventListener('click', async () => {
-  if (!cryptoKey) {
-    setStatus('请先设置私钥', 'err');
-    return;
-  }
-  const link = $('link').value.trim();
-  const extract = $('extract').value.trim();
-  if (!link) { setStatus('请填写百度网盘链接', 'err'); return; }
+async function generate() {
+  if (!cryptoKey) { setStatus('请先设置私钥', 'err'); return; }
+  const verKey = selectedOS + '-' + selectedVer;
+  const link = $('lnk-' + verKey).value.trim();
+  const extract = $('ext-' + verKey).value.trim();
+  if (!link) { setStatus('请配置当前版本的百度网盘链接', 'err'); return; }
   if (!extract) { setStatus('请填写提取码', 'err'); return; }
 
-  btnGenerate.disabled = true;
-  btnGenerate.querySelector('span:last-child').textContent = '生成中...';
+  const hours = parseInt($('hours').value) || 3;
+  const verLabel = VERSIONS[verKey].label;
+
+  $('btnGenerate').disabled = true;
+  $('btnGenerate').querySelector('span:last-child').textContent = '生成中...';
   setStatus('', '');
 
   try {
-    const hours = parseInt($('hours').value) || 3;
-    const codeId = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();
-    const now = Math.floor(Date.now() / 1000);
-    const payload = { id: codeId, exp: now + hours * 3600, iat: now, ver: 1 };
-    const payloadJson = JSON.stringify(payload);
-    const payloadBase64 = btoa(unescape(encodeURIComponent(payloadJson)))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    const codeId = crypto.randomUUID().replace(/-/g,'').substring(0,12).toUpperCase();
+    const now = Math.floor(Date.now()/1000);
+    const payload = { id: codeId, exp: now + hours*3600, iat: now, ver: 1 };
+    const p64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+    const sig = btoa(String.fromCharCode(...new Uint8Array(
+      await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, new TextEncoder().encode(p64))
+    ))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+    const code = 'AIC-' + p64 + '.' + sig;
+    const expiresAt = new Date(payload.exp*1000).toLocaleString('zh-CN');
 
-    const encoder = new TextEncoder();
-    const sigBuf = await crypto.subtle.sign(
-      'RSASSA-PKCS1-v1_5', cryptoKey, encoder.encode(payloadBase64)
-    );
-    const sigBase64 = btoa(String.fromCharCode(...new Uint8Array(sigBuf)))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    // 注册到 API
+    const apiUrl = $('apiUrl').value.trim();
+    if (apiUrl) {
+      try {
+        await fetch(apiUrl + '/api/auth/register', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, codeId, version: verKey }),
+        });
+      } catch(e) { console.warn('API 注册失败:', e.message); }
+    }
 
-    const code = `AIC-${payloadBase64}.${sigBase64}`;
-    const expiresAt = new Date(payload.exp * 1000).toLocaleString('zh-CN');
-
-    const tpl = ($('template').value || defaultTpl)
-      .replace(/\{link\}/g, link)
-      .replace(/\{extract\}/g, extract)
-      .replace(/\{code\}/g, code)
-      .replace(/\{hours\}/g, String(hours))
-      .replace(/\{expiresAt\}/g, expiresAt);
+    const tpl = ($('template').value || '')
+      .replace(/\{link\}/g, link).replace(/\{extract\}/g, extract)
+      .replace(/\{code\}/g, code).replace(/\{hours\}/g, String(hours))
+      .replace(/\{expiresAt\}/g, expiresAt).replace(/\{version\}/g, verLabel);
 
     await copyText(tpl);
-    previewContent.textContent = tpl;
-    previewEl.classList.add('show');
+    $('previewContent').textContent = tpl;
+    $('preview').classList.add('show');
 
-    history.push({
-      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-      code, codeId, expiresAt, ts: Date.now()
-    });
+    history.push({ time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}), code, codeId, version: verLabel, expiresAt, ts: Date.now() });
     history = history.slice(-200);
     localStorage.setItem(LS_HIST, JSON.stringify(history));
     renderHistory();
-
-    setStatus('✅ 已复制到剪贴板', 'ok');
+    setStatus('✅ 已复制' + (apiUrl ? '，已注册到 API' : ''), 'ok');
     showToast('已复制到剪贴板');
   } catch(err) {
     setStatus('错误: ' + err.message, 'err');
   } finally {
-    btnGenerate.disabled = false;
-    btnGenerate.querySelector('span:last-child').textContent = '生成授权码并复制';
+    $('btnGenerate').disabled = false;
+    $('btnGenerate').querySelector('span:last-child').textContent = '生成授权码并复制';
   }
-});
-
-// ====== History ======
-function renderHistory() {
-  const el = $('history');
-  if (history.length === 0) {
-    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:16px">暂无记录</div>';
-    return;
-  }
-  el.innerHTML = [...history].reverse().map((r, i) => {
-    const realIdx = history.length - 1 - i;
-    const short = r.code.length > 40 ? r.code.substring(0, 20) + '...' : r.code;
-    return `<div class="history-item" data-idx="${realIdx}">
-      <span class="h-time">${r.time}</span>
-      <span class="h-code">${short}</span>
-      <span class="h-status">✅</span>
-    </div>`;
-  }).join('');
 }
 
+function renderHistory() {
+  const el = $('history');
+  $('histCount').textContent = history.length ? '共 ' + history.length + ' 条' : '';
+  if (!history.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:16px">暂无记录</div>'; return; }
+  el.innerHTML = [...history].reverse().map((r,i) => {
+    const idx = history.length-1-i;
+    const short = r.code.length > 40 ? r.code.substring(0,16) + '...' : r.code;
+    return '<div class="history-item" data-idx="' + idx + '"><span class="h-time">' + r.time + '</span><span class="h-code">' + short + '</span><span class="h-ver">' + (r.version||'') + '</span><span class="h-status">✅</span></div>';
+  }).join('');
+}
 $('history').addEventListener('click', async (e) => {
   const item = e.target.closest('.history-item');
   if (!item) return;
   const rec = history[parseInt(item.dataset.idx)];
   if (!rec) return;
-  const tpl = ($('template').value || defaultTpl)
-    .replace(/\{link\}/g, $('link').value.trim())
-    .replace(/\{extract\}/g, $('extract').value.trim())
-    .replace(/\{code\}/g, rec.code)
-    .replace(/\{hours\}/g, String(cfg.hours || 3))
-    .replace(/\{expiresAt\}/g, rec.expiresAt);
+  const tpl = ($('template').value || '')
+    .replace(/\{link\}/g,'(已存档)').replace(/\{extract\}/g,'(已存档)')
+    .replace(/\{code\}/g, rec.code).replace(/\{hours\}/g, String(parseInt($('hours').value)||3))
+    .replace(/\{expiresAt\}/g, rec.expiresAt).replace(/\{version\}/g, rec.version||'');
   await copyText(tpl);
   showToast('已重新复制');
 });
 
-// ====== Helpers ======
 async function copyText(text) {
-  // Try modern API first
-  try {
-    await navigator.clipboard.writeText(text);
-    return;
-  } catch(e) {}
-  // Fallback for mobile browsers
+  try { await navigator.clipboard.writeText(text); return; } catch(e) {}
   const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.left = '-9999px';
-  ta.style.top = '-9999px';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
+  ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
+  document.body.appendChild(ta); ta.focus(); ta.select();
   try { document.execCommand('copy'); } catch(e) {}
   document.body.removeChild(ta);
 }
-
-function setStatus(msg, type) {
-  statusEl.textContent = msg;
-  statusEl.className = 'status ' + (type || '');
-}
-function showToast(msg) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+function setStatus(m,t){ $('status').textContent = m; $('status').className = 'status ' + (t||''); }
+function showToast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
 </script>
 </body>
 </html>
