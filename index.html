@@ -147,8 +147,9 @@ select{cursor:pointer}
   </button>
   <div class="status" id="status"></div>
   <div class="preview" id="preview">
-    <div class="preview-label">📋 已复制到剪贴板：</div>
+    <div class="preview-label" id="previewLabel">📋 已复制到剪贴板：</div>
     <pre class="preview-content" id="previewContent"></pre>
+    <button class="btn btn-sm" id="btnCopyAgain" style="display:none;margin-top:8px;width:100%">📋 点击复制</button>
   </div>
 </div>
 
@@ -355,11 +356,17 @@ async function generate() {
       .replace(/\{code\}/g, code).replace(/\{hours\}/g, String(hours))
       .replace(/\{expiresAt\}/g, expiresAt).replace(/\{version\}/g, verLabel);
 
-    await copyText(tpl);
+    const copyOk = await copyText(tpl);
     $('previewContent').textContent = tpl;
     $('preview').classList.add('show');
+    if (!copyOk) {
+      $('previewLabel').textContent = '📋 点击下方按钮复制：';
+      $('btnCopyAgain').style.display = 'block';
+    } else {
+      $('previewLabel').textContent = '📋 已复制到剪贴板：';
+    }
 
-    history.push({ time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}), code, codeId, version: verLabel, expiresAt, ts: Date.now() });
+    history.push({ time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}), code, codeId, version: verLabel, expiresAt, link, extract, ts: Date.now() });
     history = history.slice(-200);
     localStorage.setItem(LS_HIST, JSON.stringify(history));
     renderHistory();
@@ -388,22 +395,57 @@ $('history').addEventListener('click', async (e) => {
   if (!item) return;
   const rec = history[parseInt(item.dataset.idx)];
   if (!rec) return;
+  const link = rec.link || '';
+  const extract = rec.extract || '';
   const tpl = ($('template').value || '')
-    .replace(/\{link\}/g,'(已存档)').replace(/\{extract\}/g,'(已存档)')
+    .replace(/\{link\}/g, link || '(已存档)').replace(/\{extract\}/g, extract || '(已存档)')
     .replace(/\{code\}/g, rec.code).replace(/\{hours\}/g, String(parseInt($('hours').value)||3))
     .replace(/\{expiresAt\}/g, rec.expiresAt).replace(/\{version\}/g, rec.version||'');
-  await copyText(tpl);
-  showToast('已重新复制');
+  const ok = await copyText(tpl);
+  showToast(ok ? '已重新复制' : '复制失败，请长按文字手动复制');
 });
 
 async function copyText(text) {
-  try { await navigator.clipboard.writeText(text); return; } catch(e) {}
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch(e) {}
+  // Fallback: visible textarea for mobile
   const ta = document.createElement('textarea');
-  ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try { document.execCommand('copy'); } catch(e) {}
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;z-index:9999;font-size:16px;padding:60px 16px 16px;background:white;color:#333;border:none;resize:none;opacity:0.01';
+  ta.readOnly = true;
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    if (document.execCommand('copy')) {
+      document.body.removeChild(ta);
+      return true;
+    }
+  } catch(e) {}
   document.body.removeChild(ta);
+  return false;
 }
+
+// "点击复制" button in preview
+$('btnCopyAgain').addEventListener('click', async () => {
+  const text = $('previewContent').textContent;
+  if (await copyText(text)) {
+    $('previewLabel').textContent = '📋 已复制到剪贴板：';
+    $('btnCopyAgain').style.display = 'none';
+    showToast('已复制');
+  } else {
+    // For stubborn mobile browsers: select text in preview
+    const el = $('previewContent');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    showToast('长按文字手动复制');
+  }
+});
 function setStatus(m,t){ $('status').textContent = m; $('status').className = 'status ' + (t||''); }
 function showToast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
 </script>
